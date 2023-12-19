@@ -7,6 +7,7 @@
 #include <string.h>
 
 #define MAX_INPUT_SIZE 1024
+#define MAX_ARGS 100
 
 /**
  * display_prompt - function that prints on screen
@@ -29,28 +30,36 @@ void display_prompt(void)
 void exeCmd(char *command, char *executable)
 {
 	pid_t pid, wpid;
-	int status;
+	int status, i;
 	char *envp[] = {NULL};
 
 	pid = fork();
 	if (pid == 0)
 	{
-		char **argv;
+		char *token, *argv[MAX_ARGS];
 
-		argv = malloc(sizeof(char *) * 2);
-		argv[0] = command;
-		argv[1] = NULL;
+		token = strtok(command, " ");
+		i = 0;
+
+		while (token != NULL)
+		{
+			argv[i] = token;
+			i++;
+			token = strtok(NULL, " ");
+		}
+
+		argv[i] = NULL;
 
 		if (execve(command, argv, envp) == -1)
 		{
 			perror(executable);
-			free(argv);
 			exit(EXIT_FAILURE);
 		}
 	}
 	else if (pid < 0)
 	{
-		perror("fork");
+		perror("Error forking");
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
