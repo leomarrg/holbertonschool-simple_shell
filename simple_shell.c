@@ -81,7 +81,7 @@ void handleSig(int signum)
 {
 	(void) signum;
 	write(STDOUT_FILENO, "\n", 1);
-	display_prompt();
+	/*display_prompt();*/
 }
 
 /**
