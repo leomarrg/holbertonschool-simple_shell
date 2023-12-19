@@ -1,57 +1,72 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
-#include "shell.h"
+#include <string.h>
 
-/**
- * main - main function of simple shell program
- * Return: returns 0 if ran succesfully
-*/
+#define MAX_INPUT_SIZE 1024
 
-int main(void)
-{
-	char *input;
-	size_t len;
-	ssize_t read;
-
-	len = 0;
-	input = NULL;
-
-	signal(SIGINT, handleSig);
-
-	while (1)
-	{
-		printf("leomar@simple-shell> ");
-
-		read = getline(&input, &len, stdin);
-		if (read == -1)
-		{
-			free(input);
-			exit(EXIT_SUCCESS);
-		}
-
-		input[read - 1] = '\0';
-		exe_cmd(input);
-	}
-		free(input);
-		/*
-
-		if (strlen(input) == 0)
-		{
-			continue;
-		}
-
-		token = strtok(input, " ");
-
-		if (token != NULL)
-		{
-			exe_cmd(token);
-		}
-		else
-		{
-			printf("No command found.\n");
-		}*/
-	return (0);
+void display_prompt(void) {
+	write(STDOUT_FILENO, "leomar@simple-shell$ ", 21);
+	fflush(stdout);
 }
 
+void execute_command(char *command) {
+	pid_t pid, wpid;
+	int status;
+	char *envp[] = {NULL};
+
+	pid = fork();
+	if (pid == 0) {
+		char **argv = malloc(sizeof(char *) * 2);
+		argv[0] = command;
+		argv[1] = NULL;
+
+		if (execve(command, argv, envp) == -1) {
+			perror(command);
+			free(argv);
+			exit(EXIT_FAILURE);
+		}
+	} else if (pid < 0) {
+		perror("fork");
+	} else {
+		do {
+			wpid = wait(&status);
+		} while (wpid != pid);
+	}
+}
+
+void handle_signal(int signum) {
+	(void) signum;
+	write(STDOUT_FILENO, "\n", 1);
+	display_prompt();
+}
+
+int main(void) {
+	char *input = NULL;
+	size_t len = 0;
+
+	signal(SIGINT, handle_signal);
+
+	while (1) {
+		if (isatty(STDIN_FILENO)) {
+			display_prompt();
+		}
+
+		if (getline(&input, &len, stdin) == -1) {
+			if (isatty(STDIN_FILENO)) {
+				write(STDOUT_FILENO, "\n", 1);
+			}
+			free(input);
+			break;
+		}
+
+		input[strcspn(input, "\n")] = '\0';
+
+		execute_command(input);
+	}
+
+	return 0;
+}
