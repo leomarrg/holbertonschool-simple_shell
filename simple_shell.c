@@ -8,55 +8,96 @@
 
 #define MAX_INPUT_SIZE 1024
 
-void display_prompt(void) {
+/**
+ * display_prompt - function that prints on screen
+ * Return: returns nothing
+*/
+
+void display_prompt(void)
+{
 	write(STDOUT_FILENO, "leomar@simple-shell$ ", 21);
 	fflush(stdout);
 }
 
-void execute_command(char *command) {
+/**
+ * exeCmd - function that executes commands in simple shell
+ * @command: takes the user input
+ * @executable: used to print the exe file name
+ * Return: returns nothing
+*/
+
+void exeCmd(char *command, char *executable)
+{
 	pid_t pid, wpid;
 	int status;
 	char *envp[] = {NULL};
 
 	pid = fork();
-	if (pid == 0) {
-		char **argv = malloc(sizeof(char *) * 2);
+	if (pid == 0)
+	{
+		char **argv;
+
+		argv = malloc(sizeof(char *) * 2);
 		argv[0] = command;
 		argv[1] = NULL;
 
-		if (execve(command, argv, envp) == -1) {
-			perror(command);
+		if (execve(command, argv, envp) == -1)
+		{
+			perror(executable);
 			free(argv);
 			exit(EXIT_FAILURE);
 		}
-	} else if (pid < 0) {
+	}
+	else if (pid < 0)
+	{
 		perror("fork");
-	} else {
+	}
+	else
+	{
 		do {
 			wpid = wait(&status);
 		} while (wpid != pid);
 	}
 }
 
-void handle_signal(int signum) {
+/**
+ * handleSig - handles the ctrl+c input
+ * @signum: status of signal
+ * Return: returns nothing
+*/
+
+void handleSig(int signum)
+{
 	(void) signum;
 	write(STDOUT_FILENO, "\n", 1);
 	display_prompt();
 }
 
-int main(void) {
+/**
+ * main - main function in program
+ * @argc: agrs count
+ * @argv: argument vector
+ * Return: return nothings
+*/
+
+int main(__attribute__((unused)) int argc, char *argv[])
+{
 	char *input = NULL;
 	size_t len = 0;
 
 	signal(SIGINT, handle_signal);
 
-	while (1) {
-		if (isatty(STDIN_FILENO)) {
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+		{
 			display_prompt();
 		}
 
-		if (getline(&input, &len, stdin) == -1) {
-			if (isatty(STDIN_FILENO)) {
+		if (getline(&input, &len, stdin) == -1)
+		{
+			if (isatty(STDIN_FILENO))
+			{
 				write(STDOUT_FILENO, "\n", 1);
 			}
 			free(input);
@@ -65,8 +106,8 @@ int main(void) {
 
 		input[strcspn(input, "\n")] = '\0';
 
-		execute_command(input);
+		exeCmd(input, argv[0]);
 	}
 
-	return 0;
+	return (0);
 }
