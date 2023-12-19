@@ -29,7 +29,7 @@ void display_prompt(void)
 
 void exeCmd(char *command, char *executable)
 {
-	pid_t pid, wpid;
+	pid_t pid;
 	int status, i;
 	char *envp[] = {NULL};
 
@@ -56,16 +56,18 @@ void exeCmd(char *command, char *executable)
 			exit(EXIT_FAILURE);
 		}
 	}
-	else if (pid < 0)
+	else if (pid == -1)
 	{
 		perror("Error forking");
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		do {
-			wpid = wait(&status);
-		} while (wpid != pid);
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("Error waiting for child process");
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
