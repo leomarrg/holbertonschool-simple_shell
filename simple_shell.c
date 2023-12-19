@@ -31,7 +31,8 @@ void exeCmd(char *command, char *executable)
 {
 	pid_t pid;
 	int status, i;
-	char *envp[] = {NULL};
+	char *envp[] = {"PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+		NULL};
 
 	pid = fork();
 	if (pid == 0)
