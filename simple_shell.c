@@ -85,7 +85,7 @@ int main(__attribute__((unused)) int argc, char *argv[])
 	char *input = NULL;
 	size_t len = 0;
 
-	signal(SIGINT, handle_signal);
+	signal(SIGINT, handleSig);
 
 	while (1)
 	{
