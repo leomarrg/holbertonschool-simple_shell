@@ -82,7 +82,7 @@ void handleSig(int signum)
 {
 	(void) signum;
 	write(STDOUT_FILENO, "\n", 1);
-	/*display_prompt();*/
+	display_prompt();
 }
 
 /**
@@ -117,6 +117,12 @@ int main(__attribute__((unused)) int argc, char *argv[])
 		}
 
 		input[strcspn(input, "\n")] = '\0';
+
+		if (strcmp(input, "exit") == 0)
+		{
+			free(input);
+			break;
+		}
 
 		exeCmd(input, argv[0]);
 	}
