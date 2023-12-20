@@ -30,37 +30,15 @@ void display_prompt(void)
 void exeCmd(char *command, char *executable)
 {
 	pid_t pid;
-	int status, i, numPath, found;
-	char *token, *argv[MAX_ARGS], *fullPath;
-	char *path[] = {"/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin"};
-
-	fullPath = malloc(MAX_INPUT_SIZE);
-	numPath = sizeof(path)/sizeof(char *);
-	found = 0;
-
-	for (i = 0; i < numPath; i++)
-	{
-		strcpy(fullPath, path[i]);
-		strcat(fullPath, "/");
-		strcat(fullPath, command);
-	
-		if (access(fullPath, F_OK) != -1)
-		{
-			found = 1;
-			break;
-		}
-	}
-
-	if (!found)
-	{
-		printf("%s: command not found\n", command);
-		free(fullPath);
-		return;
-	}
+	int status, i;
+	char *envp[] = {"PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+		NULL};
 
 	pid = fork();
 	if (pid == 0)
 	{
+		char *token, *argv[MAX_ARGS];
+
 		token = strtok(command, " ");
 		i = 0;
 
@@ -73,7 +51,7 @@ void exeCmd(char *command, char *executable)
 
 		argv[i] = NULL;
 
-		if (execve(fullPath, argv, NULL) == -1)
+		if (execve(command, argv, envp) == -1)
 		{
 			perror(executable);
 			exit(EXIT_FAILURE);
@@ -92,8 +70,9 @@ void exeCmd(char *command, char *executable)
 			exit(EXIT_FAILURE);
 		}
 	}
-	free(fullPath);
 }
+
+
 
 /**
  * handleSig - handles the ctrl+c input
