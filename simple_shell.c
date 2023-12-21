@@ -41,7 +41,6 @@ int main(__attribute__((unused)) int argc, char *argv[])
 
 		exeCmd(input, argv[0]);
 		free(input);
-		input = NULL;
 	}
 
 	return (0);
