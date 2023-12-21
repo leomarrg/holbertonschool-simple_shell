@@ -10,7 +10,7 @@ int validCmd(char *command)
 {
 	if (command == NULL)
 		return (0);
-	if (strlen(command) > 100)
+	if (strlen(command) > 1024)
 		return (0);
 
 	return (1);
