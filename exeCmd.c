@@ -31,6 +31,9 @@ void exeCmd(char *command, char *executable)
 
 		argv[i] = NULL;
 
+		if (!validCmd(argv[0]))
+			exit(EXIT_SUCCESS);
+
 		if (execve(argv[0], argv, envp) == -1)
 		{
 			perror(executable);

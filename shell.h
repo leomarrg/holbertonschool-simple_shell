@@ -15,5 +15,6 @@
 void display_prompt(void);
 void exeCmd(char *command, char *executable);
 void handleSig(int signum);
+int validCmd(char *command);
 
 #endif
