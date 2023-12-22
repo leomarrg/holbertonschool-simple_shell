@@ -11,9 +11,9 @@ void exeCmd(char *command)
 {
 	pid_t pid;
 	int status, i;
-	char *token, *argv[MAX_ARGS], cmdCopy;
+	char *token, *argv[MAX_ARGS], *cmdCopy;
 
-	cmdCopy = strdup(cmdCopy);
+	cmdCopy = strdup(command);
 	token = strtok(command, " ");
 	i = 0;
 
