@@ -33,7 +33,7 @@ void exeCmd(char *command, char *executable)
 
 		if (execve(argv[0], argv, envp) == -1)
 		{
-			perror(executable);	
+			perror(executable);
 			exit(EXIT_FAILURE);
 		}
 	}

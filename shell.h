@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <string.h>
+#include <errno.h>
 
 #define MAX_INPUT_SIZE 1024
 #define MAX_ARGS 100
@@ -16,5 +17,6 @@ void display_prompt(void);
 void exeCmd(char *command, char *executable);
 void handleSig(int signum);
 int validCmd(char *command);
+char *findExe(char *command, char *path);
 
 #endif
