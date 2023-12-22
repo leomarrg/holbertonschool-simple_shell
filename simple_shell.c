@@ -2,8 +2,6 @@
 
 /**
  * main - main function in program
- * @argc: agrs count
- * @argv: argument vector
  * Return: return nothings
 */
 
