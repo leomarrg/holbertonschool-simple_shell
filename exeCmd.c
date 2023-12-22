@@ -1,55 +1,51 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "shell.h"
 
 /**
- * exe_cmd - function executes the commands
- * @cmd: receives the input
+ * exeCmd - function that executes commands in simple shell
+ * @command: takes the user input
  * Return: returns nothing
 */
 
-void exe_cmd(char *cmd)
+void exeCmd(char *command)
 {
 	pid_t pid;
 	int status, i;
-	char *argv[2];
-	char *token;
+	char *cmdCopy = strdup(command);
 
-	i = 0;
-	argv[0] = cmd;
-	argv[1] = NULL;
-	token = strtok(cmd, " ");
-
-	while (token != NULL)
+	if (cmdCopy == NULL)
 	{
-		argv[i] = token;
-		i++;
-		token = strtok(NULL, " ");
-	}
-	argv[i] = NULL;
-
-	pid = fork();
-
-	if (pid == -1)
-	{
-		perror("leomar@simple-shell\n");
+		perror("Error duplicating command");
 		exit(EXIT_FAILURE);
 	}
-	else if (pid == 0)
+	pid = fork();
+	if (pid == 0)
 	{
-		if (execve(argv[0], argv, NULL) == -1)
+		char *token, *argv[MAX_ARGS];
+
+		token = strtok(command, " ");
+		i = 0;
+
+		while (token != NULL)
 		{
-			perror("leomar@simple-shell\n");
-			exit(EXIT_FAILURE);
+			argv[i] = token;
+			i++;
+			token = strtok(NULL, " ");
 		}
+		argv[i] = NULL;
+		runExe(argv[0], argv);
+	}
+	else if (pid == -1)
+	{
+		perror("Error forking");
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		printf("\n");
-		waitpid(pid, &status, 0);
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("Error waiting for child process");
+			exit(EXIT_FAILURE);
+		}
 	}
+	free(cmdCopy);
 }
-
