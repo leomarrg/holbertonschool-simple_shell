@@ -14,9 +14,9 @@
 #define MAX_ARGS 100
 
 void display_prompt(void);
-void exeCmd(char *command, char *executable);
+void exeCmd(char *command);
 void handleSig(int signum);
 int validCmd(char *command);
-char *findExe(char *command, char *path);
+void runExe(char *args[]);
 
 #endif

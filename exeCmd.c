@@ -7,58 +7,31 @@
  * Return: returns nothing
 */
 
-void exeCmd(char *command, char *executable)
+void exeCmd(char *command)
 {
 	pid_t pid;
 	int status, i;
-	char *path;
-	size_t pathLen;
-	char *envp[MAX_ARGS + 1];
+	char *token, *argv[MAX_ARGS];
 
-	path = getenv("PATH");
+	token = strtok(command, " ");
+	i = 0;
 
-	if (path == NULL)
+	while (token != NULL)
 	{
-		fprintf(stderr, "Error: PATH environment variable not found\n");
-		return;
+		argv[i] = token;
+		i++;
+		token = strtok(NULL, " ");
 	}
 
-	pathLen = strlen(path);
-	envp[0] = malloc(pathLen + 6);
-
-	if (envp[0] == NULL)
-	{
-		perror("Error allocating memory");
-		exit(EXIT_FAILURE);
-	}
-
-	strcpy(envp[0], "PATH=");
-	strcat(envp[0], path);
-	envp[1] = NULL;
+	argv[i] = NULL;
 
 	pid = fork();
+
 	if (pid == 0)
 	{
-		char *token, *argv[MAX_ARGS];
-
-		token = strtok(command, " ");
-		i = 0;
-
-		while (token != NULL)
-		{
-			argv[i] = token;
-			i++;
-			token = strtok(NULL, " ");
-		}
-
-		argv[i] = NULL;
-
-		if (execve(argv[0], argv, envp) == -1)
-		{
-			perror(executable);
-			exit(EXIT_FAILURE);
-		}
+		runExe(argv);
 	}
+
 	else if (pid == -1)
 	{
 		perror("Error forking");
@@ -72,6 +45,4 @@ void exeCmd(char *command, char *executable)
 			exit(EXIT_FAILURE);
 		}
 	}
-
-	free(envp[0]);
 }

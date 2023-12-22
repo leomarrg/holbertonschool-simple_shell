@@ -7,7 +7,7 @@
  * Return: return nothings
 */
 
-int main(__attribute__((unused)) int argc, char *argv[])
+int main(void)
 {
 	char *input = NULL;
 	size_t len = 0;
@@ -39,7 +39,7 @@ int main(__attribute__((unused)) int argc, char *argv[])
 			break;
 		}
 
-		exeCmd(input, argv[0]);
+		exeCmd(input);
 		free(input);
 		input = NULL;
 	}
