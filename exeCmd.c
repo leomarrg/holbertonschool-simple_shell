@@ -11,10 +11,17 @@ void exeCmd(char *command)
 {
 	pid_t pid;
 	int status, i;
-	char *token, *argv[MAX_ARGS];
+	char *token, *argv[MAX_ARGS], cmdCopy;
 
+	cmdCopy = strdup(cmdCopy);
 	token = strtok(command, " ");
 	i = 0;
+
+	if (cmdCopy == NULL)
+	{
+		perror("Error duplicating command");
+		exit(EXIT_FAILURE);
+	}
 
 	while (token != NULL)
 	{
@@ -45,4 +52,5 @@ void exeCmd(char *command)
 			exit(EXIT_FAILURE);
 		}
 	}
+	free(cmdCopy);
 }
