@@ -7,38 +7,36 @@
  * Return: returns nothing
 */
 
-void exeCmd(char *command)
+void exeCmd(char *command, char *executable)
 {
 	pid_t pid;
 	int status, i;
-	char *token, *argv[MAX_ARGS], *cmdCopy;
-
-	cmdCopy = strdup(command);
-	token = strtok(command, " ");
-	i = 0;
-
-	if (cmdCopy == NULL)
-	{
-		perror("Error duplicating command");
-		exit(EXIT_FAILURE);
-	}
-
-	while (token != NULL)
-	{
-		argv[i] = token;
-		i++;
-		token = strtok(NULL, " ");
-	}
-
-	argv[i] = NULL;
+	char *envp[] = {"PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+		NULL};
 
 	pid = fork();
-
 	if (pid == 0)
 	{
-		runExe(argv);
-	}
+		char *token, *argv[MAX_ARGS];
 
+		token = strtok(command, " ");
+		i = 0;
+
+		while (token != NULL)
+		{
+			argv[i] = token;
+			i++;
+			token = strtok(NULL, " ");
+		}
+
+		argv[i] = NULL;
+
+		if (execve(argv[0], argv, envp) == -1)
+		{
+			perror(executable);	
+			exit(EXIT_FAILURE);
+		}
+	}
 	else if (pid == -1)
 	{
 		perror("Error forking");
@@ -52,5 +50,4 @@ void exeCmd(char *command)
 			exit(EXIT_FAILURE);
 		}
 	}
-	free(cmdCopy);
 }
