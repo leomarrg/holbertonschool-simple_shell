@@ -56,15 +56,21 @@ char *find_executable(char *command, char *paths)
  * execute_command - makes command executable
  * @args: gives arguments
  * @paths: gives paths
+ * @ls: list
  */
 void execute_command(char **args, char *paths)
 {
 	char *executable = find_executable(args[0], paths);
 
 	if (executable != NULL)
-	{
-		execv(executable, args);
-	}
+		if (strcmp(args[0], "ls") == 0 && strcmp(args[1], "-l") == 0)
+		{
+		execlp("ls", "ls", "-l", NULL);
+		}
+		else
+		{
+			execve(executable, args, ls);
+		}
 	else
 	{
 		printf("Command '%s' not found\n", args[0]);
