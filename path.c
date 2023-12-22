@@ -56,20 +56,19 @@ char *find_executable(char *command, char *paths)
  * execute_command - makes command executable
  * @args: gives arguments
  * @paths: gives paths
- * @ls: list
  */
 void execute_command(char **args, char *paths)
 {
 	char *executable = find_executable(args[0], paths);
 
 	if (executable != NULL)
-		if (strcmp(args[0], "ls") == 0 && strcmp(args[1], "-l") == 0)
+		if (strcmp(args[0], "ls") == 0)
 		{
-		execlp("ls", "ls", "-l", NULL);
+		execv("/bin/ls", args);
 		}
 		else
 		{
-			execve(executable, args, ls);
+			execv(executable, args);
 		}
 	else
 	{
