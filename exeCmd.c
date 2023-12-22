@@ -11,8 +11,30 @@ void exeCmd(char *command, char *executable)
 {
 	pid_t pid;
 	int status, i;
-	char *envp[] = {"PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
-		NULL};
+	char *path;
+	size_t pathLen;
+	char *envp[MAX_ARGS + 1];
+
+	path = getenv("PATH");
+
+	if (path == NULL)
+	{
+		fprintf(stderr, "Error: PATH environment variable not found\n");
+		return;
+	}
+
+	pathLen = strlen(path);
+	envp[0] = malloc(pathLen + 6);
+
+	if (envp[0] == NULL)
+	{
+		perror("Error allocating memory");
+		exit(EXIT_FAILURE);
+	}
+
+	strcpy(envp[0], "PATH=");
+	strcat(envp[0], path);
+	envp[1] = NULL;
 
 	pid = fork();
 	if (pid == 0)
@@ -50,4 +72,6 @@ void exeCmd(char *command, char *executable)
 			exit(EXIT_FAILURE);
 		}
 	}
+
+	free(envp[0]);
 }
