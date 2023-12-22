@@ -31,12 +31,15 @@ void exeCmd(char *command, char *executable)
 
 		argv[i] = NULL;
 
+<<<<<<< HEAD
+=======
 		if (!validCmd(argv[0]))
 			exit(EXIT_FAILURE);
 
+>>>>>>> origin/main
 		if (execve(argv[0], argv, envp) == -1)
 		{
-			perror(executable);
+			perror(executable);	
 			exit(EXIT_FAILURE);
 		}
 	}
