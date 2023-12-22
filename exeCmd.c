@@ -3,17 +3,20 @@
 /**
  * exeCmd - function that executes commands in simple shell
  * @command: takes the user input
- * @executable: used to print the exe file name
  * Return: returns nothing
 */
 
-void exeCmd(char *command, char *executable)
+void exeCmd(char *command)
 {
 	pid_t pid;
 	int status, i;
-	char *envp[] = {"PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
-		NULL};
+	char *cmdCopy = strdup(command);
 
+	if (cmdCopy == NULL)
+	{
+		perror("Error duplicating command");
+		exit(EXIT_FAILURE);
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -28,14 +31,8 @@ void exeCmd(char *command, char *executable)
 			i++;
 			token = strtok(NULL, " ");
 		}
-
 		argv[i] = NULL;
-
-		if (execve(argv[0], argv, envp) == -1)
-		{
-			perror(executable);	
-			exit(EXIT_FAILURE);
-		}
+		runExe(argv[0], argv);
 	}
 	else if (pid == -1)
 	{
@@ -50,4 +47,5 @@ void exeCmd(char *command, char *executable)
 			exit(EXIT_FAILURE);
 		}
 	}
+	free(cmdCopy);
 }
