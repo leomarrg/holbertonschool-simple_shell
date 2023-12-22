@@ -9,7 +9,7 @@
 
 int main(void)
 {
-	char *input = NULL;
+/*	char *input = NULL;*/
 	size_t len = 0;
 
 	signal(SIGINT, handleSig);

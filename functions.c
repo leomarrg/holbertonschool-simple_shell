@@ -23,4 +23,3 @@ void display_prompt(void)
 	write(STDOUT_FILENO, "leomar@simple-shell$ ", 21);
 	fflush(stdout);
 }
-

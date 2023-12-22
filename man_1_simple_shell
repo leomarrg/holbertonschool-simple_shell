@@ -1,43 +1,63 @@
 .TH man 1 "22 Dec 2023" "0.1" "simple_shell man page"
 
 .SH NAME
-.B simple_shell
-- Simple shell create in C to interact with a linux operating system.
+hsh \- a simple shell
 
 .SH SYNOPSIS
- hsh [options] [file]
+.B hsh
+[\fIOPTION\fR]... [\fICOMMAND\fR]...
 
 .SH DESCRIPTION
-Shell is a UNIX term for the interactive user interface with an operating system. The shell is the layer of programming that understands
-and executes the commands a user enters. In some systems, the shell is called a command interpreter. A shell usually implies an interface
-with a command syntax
+The ./hsh command is a simple shell that provides a basic interactive shell environment.
 
-.B Overview
 
-The simple shell is a command that reads lines from either a file or the terminal, interprets them, and generally executes other commands. It is the program that is started when a user logs into the system. It incorporates many features to aid interactive use and has the advantage that the interpretative language is common to both interactive and non-interactive use (shell scripts). That is, commands can be typed directly to the running simple shell or can be put into a file, which can be executed directly by the simple shell.
-.SH Return Value
+.SH INTERACTIVE MODE
+When run without any arguments, \fBhsh\fR enters interactive mode, allowing the user to enter commands one at a time.
 
-Always 0 for success, other number means failure.
+.SH EXIT STATUS
+The ctrl+d command returns a status of 0 on success and a non-zero status on failure.
 
-.SH PATH
+.SH EXAMPLES
+To run a command in interactive mode:
+.BR hsh
+./hsh
 
-It will look inside al directions in PATH env variable for executable.
+To run a command in non-interactive mode:
+.BR echo "/bin/ls" \| ./hsh
+.BR cat test_ls_2 \| ./hsh
 
-.SH
-
-.SH OPTIONS
-.B simple_shell
-Command options will be typed after the main command followed by a space and a
- '-' symbol.
-
-.SH EXAMPLE
-
-[command] [options]
-$ ls -l
-
-.SH BUGS
-Single space required after argument.
-
+.SH SEE ALSO
+.BR execve(2),
+.BR fork(2),
+.BR waitpid(2),
+.BR signal(2)
 
 .SH AUTHOR
-Leomar Rodriguez, Sebastian Qui~ones.
+Written by Leomar Rodriguez Sebastian Qui~ones.
+
+.SH REPORTING BUGS
+Report any bugs to the GitHub repository: https://github.com/leomarrg/holbertonschool-simple_shell
+
+.SH COPYRIGHT
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+.SH NOTES
+This man page is a basic template. Customize it further based on your shell's features and options.
+
+.SH VERSION
+Version 1.0
+
+.SH HISTORY
+This is the initial version of \fBhsh\fR.
+
+.SH COPYRIGHT
+Copyright © 2023 Leomar Rodriguez Sebastian Qui~ones
+
+.SH LICENSE
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any later version.
+
+.SH SEE ALSO
+.BR bash(1), sh(1), dash(1)
